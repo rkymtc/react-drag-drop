@@ -1,13 +1,7 @@
 import React, { useRef } from 'react'
-import { MediaItem } from '../types'
+import { SidebarProps } from '../types'
 import MediaList from './MediaList'
-
-interface SidebarProps {
-  mediaList: MediaItem[]
-  removeFromMediaList: (id: string) => void
-  handleFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void
-  dropAreaRef: React.RefObject<HTMLDivElement>
-}
+import useLayout from '../hooks/useLayout'
 
 const Sidebar: React.FC<SidebarProps> = ({
   mediaList,
@@ -16,18 +10,19 @@ const Sidebar: React.FC<SidebarProps> = ({
   dropAreaRef
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const { isMobile } = useLayout()
 
   return (
-    <div className="w-full md:w-64 flex flex-col sidebar py-3">
-      <div className="p-4">
-        <h2 className="text-xl font-bold section-title">Medya Dosyaları</h2>
+    <div className="w-full md:w-64 flex flex-col sidebar py-1.5">
+      <div className={isMobile ? "px-2 py-0.5" : "p-4"}>
+        <h2 className={`${isMobile ? 'text-base' : 'text-xl'} font-bold section-title`}>Medya Dosyaları</h2>
       </div>
-      <div className="p-4">
+      <div className={isMobile ? "px-2 py-0.5" : "p-4"}>
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="px-4 py-2 rounded-md w-full mb-3 glow-effect"
+          className={`px-2 py-1 rounded-md w-full ${isMobile ? 'mb-1 text-xs' : 'mb-3'} glow-effect`}
         >
-          Dosya Ekle
+          {isMobile ? '+' : 'Dosya Ekle'}
         </button>
         <input
           ref={fileInputRef}
@@ -40,7 +35,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
       <div
         ref={dropAreaRef}
-        className="flex-grow p-4 overflow-auto drop-area mx-4 min-h-[100px]"
+        className={`flex-grow ${isMobile ? 'p-1 mx-2 min-h-[50px]' : 'p-4 mx-4 min-h-[100px]'} overflow-auto drop-area`}
       >
         <MediaList 
           mediaList={mediaList} 

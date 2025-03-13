@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { TouchBackend } from 'react-dnd-touch-backend'
@@ -8,20 +8,18 @@ import Sidebar from './components/Sidebar'
 import Preview from './components/Preview'
 import Timeline from './components/Timeline'
 
-import useMediaFiles from './hooks/useMediaFiles'
-
-const isMobile = () => {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768
-}
+import useLayout from './hooks/useLayout'
+import useMediaManager from './hooks/useMediaManager'
 
 const touchBackendOptions = {
   enableMouseEvents: true, 
   enableTouchEvents: true, 
-  delayTouchStart: 50 
+  delayTouchStart: 50,
+  enableKeyboardEvents: true
 }
 
 function App() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const { isMobile, isSidebarOpen, toggleSidebar } = useLayout()
   const dropAreaRef = useRef<HTMLDivElement>(null)
   
   const {
@@ -34,77 +32,18 @@ function App() {
     handleDropToTimeline,
     removeFromTimeline,
     moveTimelineItem
-  } = useMediaFiles()
+  } = useMediaManager({
+    dropAreaRef,
+    acceptedTypes: ['image/', 'video/']
+  })
 
-
+  // Debug için timeline öğelerini izle
   useEffect(() => {
-    const dropArea = dropAreaRef.current
-    if (!dropArea) return
+    console.log('Timeline items updated:', timelineItems);
+  }, [timelineItems]);
 
-    const handleDragOver = (e: DragEvent) => {
-      e.preventDefault()
-      dropArea.classList.add('border-blue-500', 'border-2')
-    }
-    const handleDragLeave = (e: DragEvent) => {
-      e.preventDefault()
-      dropArea.classList.remove('border-blue-500', 'border-2')
-    }
-    const handleDrop = (e: DragEvent) => {
-      e.preventDefault()
-      dropArea.classList.remove('border-blue-500', 'border-2')
-      if (e.dataTransfer?.files.length) {
-        const fileList = e.dataTransfer.files
-        const newItems: any[] = []
-        for (let i = 0; i < fileList.length; i++) {
-          const file = fileList[i]
-          if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
-            const url = URL.createObjectURL(file)
-            newItems.push({
-              id: crypto.randomUUID(),
-              file,
-              url
-            })
-          }
-        }
-      }
-    }
-
-    dropArea.addEventListener('dragover', handleDragOver)
-    dropArea.addEventListener('dragleave', handleDragLeave)
-    dropArea.addEventListener('drop', handleDrop)
-
-    return () => {
-      dropArea.removeEventListener('dragover', handleDragOver)
-      dropArea.removeEventListener('dragleave', handleDragLeave)
-      dropArea.removeEventListener('drop', handleDrop)
-    }
-  }, [])
-
- 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsSidebarOpen(false)
-      } else {
-        setIsSidebarOpen(true)
-      }
-    }
-
-    window.addEventListener('resize', handleResize)
-    handleResize()
-    
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
-  }
-
-
-  const Backend = isMobile() ? TouchBackend : HTML5Backend
-  const backendOptions = isMobile() ? touchBackendOptions : {}
+  const Backend = isMobile ? TouchBackend : HTML5Backend
+  const backendOptions = isMobile ? touchBackendOptions : {}
 
   return (
     <DndProvider backend={Backend} options={backendOptions}>
@@ -116,6 +55,7 @@ function App() {
           >
             {isSidebarOpen ? 'Medya Panelini Gizle' : 'Medya Panelini Göster'}
           </button>
+          <div className="text-lg font-medium">React Drag Drop</div>
         </div>
         
         <div className="boxes-container flex flex-col md:flex-row flex-1 responsive-container">

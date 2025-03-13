@@ -1,40 +1,38 @@
-/* Ana renk paleti değişkenleri */
 :root {
-  /* Ana renkler - Daha sade tonlar */
   --color-bg-primary: #121212;
   --color-bg-secondary: rgba(30, 30, 35, 0.6);
   --color-bg-accent: rgba(60, 60, 70, 0.4);
   
-  /* Metin renkleri - Daha yumuşak */
   --color-text-primary: #f0f0f0;
   --color-text-secondary: #b0b0b0;
   
-  /* Vurgu renkleri - Daha yumuşak mor */
   --color-accent-primary: #6c5ce7;
   --color-accent-secondary: #5b47d1;
   --color-accent-hover: #4834b8;
   
-  /* İkincil vurgu - Daha yumuşak */
   --color-secondary-accent: #74b9ff;
   --color-secondary-accent-hover: #0984e3;
   
-  /* Tehlike renkleri - Daha yumuşak kırmızı */
   --color-danger: #ff7675;
   --color-danger-hover: #e84393;
   
-  /* Gölgeler - Daha az belirgin */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.07);
   --shadow-lg: 0 3px 6px rgba(0, 0, 0, 0.1);
   
-  /* Köşe yuvarlaklıkları */
   --border-radius-sm: 6px;
   --border-radius-md: 8px;
   --border-radius-lg: 12px;
   
-  /* Geçişler */
   --transition-fast: all 0.2s ease;
   --transition-normal: all 0.3s ease;
+  
+  --mobile-header-height: 50px;
+  --mobile-padding: 8px;
+  --mobile-sidebar-height: 220px;
+  --mobile-font-size-small: 0.7rem;
+  --mobile-font-size-normal: 0.8rem;
+  --mobile-font-size-large: 0.9rem;
 }
 
 #root {
@@ -58,7 +56,7 @@
 
 .content-container {
   width: 100%;
-  padding: 1rem;
+  padding: var(--mobile-padding);
 }
 
 @media (min-width: 768px) {
@@ -108,6 +106,7 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
+  gap: 12px;
 }
 
 .sidebar {
@@ -169,6 +168,33 @@
   border: 1px solid var(--color-bg-accent);
 }
 
+/* Mobil sürükleme iyileştirmeleri */
+.mobile-drag-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  background-color: transparent;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.mobile-drag-hint {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: var(--color-text-primary);
+  font-size: 0.7rem;
+  text-align: center;
+  padding: 4px 0;
+  z-index: 6;
+}
+
 .boxes-container {
   display: flex;
   flex-direction: column;
@@ -226,7 +252,6 @@ button:active {
   border-color: var(--color-accent-primary);
 }
 
-/* Silme butonları için stil */
 .delete-button {
   background: var(--color-danger);
   color: white;
@@ -242,7 +267,6 @@ button:active {
   box-shadow: var(--shadow-sm);
 }
 
-/* Boş durumlar için stil */
 .empty-state {
   background-color: rgba(40, 40, 45, 0.3);
   border-radius: var(--border-radius-lg);
@@ -256,7 +280,6 @@ button:active {
   font-weight: 500;
 }
 
-/* Sürükle bırak alanları için stil */
 .drop-area {
   border: 1px dashed rgba(108, 92, 231, 0.2);
   border-radius: var(--border-radius-md);
@@ -295,51 +318,139 @@ button:active {
 
 @media (max-width: 576px) {
   .sidebar {
-    max-height: 300px;
+    max-height: var(--mobile-sidebar-height);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    margin-bottom: 6px;
+  }
+  
+  .preview {
+    height: auto;
+    min-height: 300px;
+    max-height: 300px;
   }
   
   .preview-container {
-    padding: 0.5rem;
+    padding: 0.4rem;
+    margin-bottom: 6px;
+    height: auto;
+    max-height: 300px;
   }
   
   .timeline-container {
-    height: 5rem;
+    height: 7rem;
+    padding: 0.4rem;
   }
   
   .media-item {
-    height: 4rem;
+    height: 3.5rem;
+    margin-bottom: 6px;
+  }
+  
+  .touch-manipulation * {
+    touch-action: none !important;
+  }
+  
+  .delete-button {
+    min-height: 24px;
+    min-width: 24px;
+    padding: 3px !important;
+    font-size: 11px !important;
   }
   
   .boxes-container {
     flex-direction: column;
-    gap: 0.75rem;
-    padding: 0.75rem;
+    gap: 0.5rem;
+    padding: 0.5rem;
   }
   
   button {
-    min-height: 44px;
-    min-width: 44px;
-    padding: 8px 16px;
-    font-size: 16px;
+    min-height: 32px;
+    min-width: 32px;
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+  
+  .bg-gray-800 {
+    background-color: var(--color-bg-secondary);
+    height: var(--mobile-header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--mobile-padding);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid rgba(108, 92, 231, 0.1);
+  }
+  
+  .bg-gray-800 .text-lg {
+    font-size: var(--mobile-font-size-large);
+  }
+  
+  .content-area {
+    gap: 6px;
+  }
+  
+  .section-title {
+    font-size: var(--mobile-font-size-large);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.3rem;
+  }
+  
+  .empty-state {
+    padding: 0.75rem;
+  }
+  
+  .empty-state p:first-child {
+    font-size: var(--mobile-font-size-normal);
+  }
+  
+  .empty-state p {
+    font-size: var(--mobile-font-size-small);
+  }
+  
+  .drop-message {
+    font-size: var(--mobile-font-size-normal);
+    padding: 0.3rem 0.8rem;
+  }
+  
+  .width-indicator {
+    font-size: 0.65rem;
+    padding: 1px 0;
   }
 }
 
 @media (min-width: 577px) and (max-width: 768px) {
   .sidebar {
-    max-height: 400px;
+    max-height: 350px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    margin-bottom: 12px;
   }
   
   .preview-container {
     padding: 0.75rem;
+    margin-bottom: 12px;
   }
   
   .boxes-container {
     flex-direction: column;
     gap: 0.75rem;
+    padding: 1rem;
+  }
+  
+  .bg-gray-800 {
+    background-color: var(--color-bg-secondary);
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid rgba(108, 92, 231, 0.1);
   }
 }
 

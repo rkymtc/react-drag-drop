@@ -1,49 +1,55 @@
 import React from 'react'
+import { DraggablePreviewProps } from '../types'
+import useLayout from '../hooks/useLayout'
 import { useDrag } from 'react-dnd'
-import { MediaItem, ItemTypes } from '../types'
-
-interface DraggablePreviewProps {
-  item: MediaItem
-}
+import { ItemTypes } from '../types'
 
 const DraggablePreview: React.FC<DraggablePreviewProps> = ({ item }) => {
-  const [{ isDragging }, drag] = useDrag(() => ({
+  const { isMobile } = useLayout()
+
+  const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.MEDIA,
-    item,
+    item: { ...item },
     collect: (monitor) => ({
       isDragging: monitor.isDragging()
-    }),
-    options: {
-      dropEffect: 'copy'
-    }
-  }))
+    })
+  })
 
-  const isImage = item.file.type.startsWith('image/')
   const isVideo = item.file.type.startsWith('video/')
 
   return (
     <div
       ref={drag}
-      className="cursor-move w-full h-full flex items-center justify-center touch-manipulation"
+      className={`w-full h-full relative ${isDragging ? 'opacity-50' : 'opacity-100'}`}
       style={{ 
-        opacity: isDragging ? 0.5 : 1,
-        touchAction: 'none'
+        touchAction: 'none',
+        cursor: 'grab'
       }}
+      data-handler-id={`draggable-preview-${item.id}`}
     >
-      {isImage && (
-        <img
-          src={item.url}
-          alt="preview"
-          className="object-cover w-full h-full"
-          draggable="true"
-        />
+      {isMobile && (
+        <div className="absolute inset-0 z-10 bg-transparent touch-manipulation" />
       )}
-      {isVideo && (
+      {isVideo ? (
         <video
           src={item.url}
-          className="object-cover w-full h-full"
-          draggable="true"
+          className="w-full h-full object-cover"
+          controls={false}
+          muted
+          draggable={false}
         />
+      ) : (
+        <img
+          src={item.url}
+          alt="Media preview"
+          className="w-full h-full object-cover"
+          draggable={false}
+        />
+      )}
+      {isMobile && (
+        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white py-0.5 text-center mobile-drag-hint">
+          Sürükle
+        </div>
       )}
     </div>
   )
