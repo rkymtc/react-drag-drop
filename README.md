@@ -29,7 +29,7 @@ Projeyi yerel ortamınızda çalıştırmak için:
 
 ```bash
 # Repoyu klonlayın
-git clone https://github.com/kullaniciadi/react-drag-drop.git
+git clone https://github.com/rkymtc/react-drag-drop.git
 cd react-drag-drop
 
 # Bağımlılıkları yükleyin
