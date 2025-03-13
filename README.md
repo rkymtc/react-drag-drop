@@ -6,7 +6,7 @@ Modern bir sürükle-bırak arayüzü ile medya dosyalarını yönetmenizi sağl
 
 Uygulamanın canlı demosuna aşağıdaki linkten ulaşabilirsiniz:
 
-🔗 [React Drag Drop Demo](https://rkymtc.github.io/react-drag-drop)
+🔗 [React Drag Drop Demo](https://react-dragdrop.netlify.app/)
 
 ## Özellikler
 
