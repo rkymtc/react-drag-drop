@@ -13,7 +13,7 @@ Uygulamanın canlı demosuna aşağıdaki linkten ulaşabilirsiniz:
 - Resim ve video dosyalarını sürükle-bırak ile yükleme
 - Medya dosyalarını timeline'a ekleme
 - Timeline'daki öğeleri sürükleyerek yeniden sıralama
-- Timeline öğelerinin genişliğini ayarlama
+
 
 ## Teknolojiler
 
