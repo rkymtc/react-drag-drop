@@ -25,13 +25,16 @@ export interface TimelineProps {
   handleDropToTimeline: (item: MediaItem) => void
   removeFromTimeline: (id: string) => void
   moveTimelineItem: (dragIndex: number, hoverIndex: number) => void
+
 }
 
 export interface TimelineItemProps {
   item: MediaItem
   index: number
   moveItem: (dragIndex: number, hoverIndex: number) => void
-  removeFromTimeline: (id: string) => void
+  removeFromTimeline: (id: string) => void 
+   updateTimelineItemWidth:any
+   
 }
 
 export interface SidebarProps {
@@ -74,10 +77,13 @@ export interface ResizableOptions {
   initialWidth?: number
   minWidth?: number
   onWidthChange?: (width: number) => void
+  maxWidth?:number
+  containerRef?:any
 }
 
 export interface ResizableReturn {
   width: number
   handleResizeStart: (e: React.MouseEvent | React.TouchEvent) => void
   isResizing: React.RefObject<boolean>
+ 
 } 

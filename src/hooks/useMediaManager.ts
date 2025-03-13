@@ -48,7 +48,8 @@ const useMediaManager = (options: MediaManagerOptions = {}) => {
 
  
   const handleDropToTimeline = useCallback((item: MediaItem) => {
-    setTimelineItems((prev) => [...prev, { ...item, width: 100 }])
+    const newUrl = URL.createObjectURL(item.file)
+    setTimelineItems((prev) => [...prev, { ...item, url: newUrl, width: 100 }])
   }, [])
 
   const removeFromTimeline = useCallback((id: string) => {
@@ -62,14 +63,12 @@ const useMediaManager = (options: MediaManagerOptions = {}) => {
   }, [])
 
   const moveTimelineItem = useCallback((dragIndex: number, hoverIndex: number) => {
-    console.log(`Moving item from index ${dragIndex} to index ${hoverIndex}`);
     setTimelineItems((prevItems) => {
       const newItems = [...prevItems];
       
 
       if (dragIndex < 0 || dragIndex >= newItems.length || 
           hoverIndex < 0 || hoverIndex >= newItems.length) {
-        console.error('Invalid indices for moveTimelineItem', { dragIndex, hoverIndex, length: newItems.length });
         return prevItems;
       }
       
@@ -146,4 +145,4 @@ const useMediaManager = (options: MediaManagerOptions = {}) => {
   }
 }
 
-export default useMediaManager 
+export default useMediaManager

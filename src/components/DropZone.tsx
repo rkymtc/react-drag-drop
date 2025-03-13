@@ -9,7 +9,6 @@ const DropZone: React.FC<DropZoneProps> = ({ accept, onDrop, className, children
   const [{ isOver, canDrop }, drop] = useDrop({
     accept,
     drop: (item) => {
-      console.log('DropZone: Item dropped', item);
       onDrop(item);
       return undefined;
     },

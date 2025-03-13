@@ -9,14 +9,19 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
   item, 
   index, 
   moveItem,
-  removeFromTimeline
+  removeFromTimeline,
+  updateTimelineItemWidth
 }) => {
   const ref = useRef<HTMLDivElement>(null)
   const { isMobile } = useLayout()
   
   const { width, handleResizeStart } = useResizable({
     initialWidth: item.width || 100,
-    minWidth: isMobile ? 50 : 100
+    minWidth: isMobile ? 50 : 100,
+    containerRef: ref.current?.closest('.drop-area')?.querySelector('.flex') as HTMLDivElement,
+    onWidthChange: (newWidth) => {
+      updateTimelineItemWidth(item.id, newWidth)
+    }
   })
 
 
@@ -108,7 +113,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
       </button>
       
       <div 
-        className={`absolute top-0 right-0 ${isMobile ? 'w-4' : 'w-4'} h-full bg-blue-500 bg-opacity-50 cursor-ew-resize hover:bg-opacity-80 transition-colors z-15`}
+        className={`absolute top-0 right-0 ${isMobile ? 'w-4' : 'w-4'} h-full cursor-ew-resize hover:bg-opacity-80 transition-colors z-15 resize-handle bg-blue-500 bg-opacity-50`}
         onMouseDown={(e) => {
           e.stopPropagation();
           handleResizeStart(e);
@@ -120,7 +125,8 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
         title="Genişliği değiştirmek için sürükleyin"
       >
         <div className="h-full flex items-center justify-center">
-          <div className={`${isMobile ? 'w-0.5' : 'w-0.5'} h-5 bg-white`}></div>
+          <div className={`${isMobile ? 'w-0.5' : 'w-0.5'} h-5 bg-white opacity-80`}></div>
+          <div className={`${isMobile ? 'w-0.5' : 'w-0.5'} h-5 bg-white opacity-80 ml-0.5`}></div>
         </div>
       </div>
       
@@ -139,4 +145,4 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
   )
 }
 
-export default TimelineItem 
+export default TimelineItem

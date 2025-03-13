@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react'
 import { ItemTypes, TimelineProps } from '../types'
-import TimelineItem from './TimelineItem'
 import DropZone from './DropZone'
 import useLayout from '../hooks/useLayout'
+import TimelineItem from './TimelineItem'
 
 const Timeline: React.FC<TimelineProps> = ({
   timelineItems,
@@ -13,7 +13,6 @@ const Timeline: React.FC<TimelineProps> = ({
   const { isMobile } = useLayout()
 
   const handleMoveItem = useCallback((dragIndex: number, hoverIndex: number) => {
-    console.log(`Timeline: Moving item from ${dragIndex} to ${hoverIndex}`);
     moveTimelineItem(dragIndex, hoverIndex);
   }, [moveTimelineItem]);
 
@@ -25,7 +24,7 @@ const Timeline: React.FC<TimelineProps> = ({
           onDrop={handleDropToTimeline}
           className="w-full h-full flex items-center drop-area"
         >
-          <div className="flex items-center gap-2 overflow-x-auto w-full h-full py-2">
+          <div className="flex items-center gap-2 overflow-x-auto w-full h-full py-2" style={{ minWidth: 0, flexBasis: 'auto' }}>
             {timelineItems.map((item, index) => (
               <TimelineItem
                 key={item.id}
@@ -33,6 +32,14 @@ const Timeline: React.FC<TimelineProps> = ({
                 index={index}
                 moveItem={handleMoveItem}
                 removeFromTimeline={removeFromTimeline}
+                updateTimelineItemWidth={(width: number) => {
+                  const newWidth = Math.max(width, 100); 
+                  const containerWidth = document.querySelector('.timeline-container')?.clientWidth || 0;
+                  const minItemWidth = 100; 
+                  const maxItemWidth = Math.floor((containerWidth - (timelineItems.length - 1) * 8) / timelineItems.length); 
+                  const dynamicWidth = Math.min(Math.max(newWidth, minItemWidth), maxItemWidth);
+                                    return dynamicWidth;
+                }}
               />
             ))}
             {timelineItems.length === 0 && (
@@ -50,4 +57,4 @@ const Timeline: React.FC<TimelineProps> = ({
   )
 }
 
-export default Timeline 
+export default Timeline

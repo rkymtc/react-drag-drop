@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { TouchBackend } from 'react-dnd-touch-backend'
@@ -36,12 +36,7 @@ function App() {
     dropAreaRef,
     acceptedTypes: ['image/', 'video/']
   })
-
-  // Debug için timeline öğelerini izle
-  useEffect(() => {
-    console.log('Timeline items updated:', timelineItems);
-  }, [timelineItems]);
-
+  
   const Backend = isMobile ? TouchBackend : HTML5Backend
   const backendOptions = isMobile ? touchBackendOptions : {}
 
