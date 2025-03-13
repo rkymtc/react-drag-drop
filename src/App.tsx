@@ -14,11 +14,6 @@ const isMobile = () => {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768
 }
 
-
-const getBackend = () => {
-  return isMobile() ? TouchBackend : HTML5Backend
-}
-
 const touchBackendOptions = {
   enableMouseEvents: true, 
   enableTouchEvents: true, 
