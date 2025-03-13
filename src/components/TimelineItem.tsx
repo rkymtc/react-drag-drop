@@ -26,7 +26,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
     const handleResizeMove = (e: MouseEvent | TouchEvent) => {
       if (!isResizing.current) return
       
-      // Mouse veya dokunmatik olay için X koordinatını al
+    
       const clientX = 'touches' in e 
         ? e.touches[0].clientX 
         : (e as MouseEvent).clientX
@@ -96,7 +96,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
     e.stopPropagation()
     isResizing.current = true
     
-    // Mouse veya dokunmatik olay için X koordinatını al
+  
     if ('touches' in e) {
       startX.current = e.touches[0].clientX
     } else {

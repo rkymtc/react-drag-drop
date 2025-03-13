@@ -20,7 +20,7 @@ const DropZone: React.FC<DropZoneProps> = ({ accept, onDrop, className, children
       canDrop: monitor.canDrop()
     }),
     options: {
-      // Mobil cihazlarda sürükleme işlemini iyileştirmek için
+    
       dropEffect: 'copy'
     }
   }))
