@@ -23,10 +23,15 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
   const startWidth = useRef(0)
 
   useEffect(() => {
-    const handleResizeMove = (e: MouseEvent) => {
+    const handleResizeMove = (e: MouseEvent | TouchEvent) => {
       if (!isResizing.current) return
       
-      const deltaX = e.clientX - startX.current
+      // Mouse veya dokunmatik olay için X koordinatını al
+      const clientX = 'touches' in e 
+        ? e.touches[0].clientX 
+        : (e as MouseEvent).clientX
+      
+      const deltaX = clientX - startX.current
       const newWidth = Math.max(50, startWidth.current + deltaX)
       setWidth(newWidth)
     }
@@ -35,14 +40,20 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
       isResizing.current = false
       document.removeEventListener('mousemove', handleResizeMove)
       document.removeEventListener('mouseup', handleResizeEnd)
+      document.removeEventListener('touchmove', handleResizeMove)
+      document.removeEventListener('touchend', handleResizeEnd)
     }
 
     document.addEventListener('mousemove', handleResizeMove)
     document.addEventListener('mouseup', handleResizeEnd)
+    document.addEventListener('touchmove', handleResizeMove, { passive: false })
+    document.addEventListener('touchend', handleResizeEnd)
     
     return () => {
       document.removeEventListener('mousemove', handleResizeMove)
       document.removeEventListener('mouseup', handleResizeEnd)
+      document.removeEventListener('touchmove', handleResizeMove)
+      document.removeEventListener('touchend', handleResizeEnd)
     }
   }, [])
 
@@ -51,7 +62,10 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
     item: () => ({ id: item.id, index }),
     collect: (monitor) => ({
       isDragging: monitor.isDragging()
-    })
+    }),
+    options: {
+      dropEffect: 'move'
+    }
   })
 
   const [, drop] = useDrop<{ id: string, index: number }>({
@@ -77,11 +91,18 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
     }
   })
 
-  const handleResizeStart = (e: React.MouseEvent) => {
+  const handleResizeStart = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault()
     e.stopPropagation()
     isResizing.current = true
-    startX.current = e.clientX
+    
+    // Mouse veya dokunmatik olay için X koordinatını al
+    if ('touches' in e) {
+      startX.current = e.touches[0].clientX
+    } else {
+      startX.current = (e as React.MouseEvent).clientX
+    }
+    
     startWidth.current = width
   }
 
@@ -93,8 +114,12 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
   return (
     <div
       ref={ref}
-      className={`relative flex-shrink-0 cursor-move ${isDragging ? 'opacity-50' : 'opacity-100'}`}
-      style={{ width: `${width}px`, height: '64px' }}
+      className={`relative flex-shrink-0 cursor-move touch-manipulation timeline-item glow-effect ${isDragging ? 'opacity-50' : 'opacity-100'}`}
+      style={{ 
+        width: `${width}px`, 
+        height: '64px',
+        touchAction: 'none'
+      }}
     >
       <div className="w-full h-full overflow-hidden rounded">
         {isImage && (
@@ -102,19 +127,21 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
             src={item.url}
             alt="timeline"
             className="w-full h-full object-cover"
+            draggable="true"
           />
         )}
         {isVideo && (
           <video
             src={item.url}
             className="w-full h-full object-cover"
+            draggable="true"
           />
         )}
       </div>
       
       <button
         onClick={() => removeFromTimeline(item.id)}
-        className="absolute top-0 right-0 text-xs bg-red-600 hover:bg-red-700 px-1 py-0.5 rounded z-10"
+        className="absolute top-0 right-0 text-xs delete-button px-1 py-0.5 rounded z-10"
       >
         X
       </button>
@@ -122,11 +149,16 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
       <div 
         className="absolute top-0 right-0 w-4 h-full bg-blue-500 bg-opacity-50 cursor-ew-resize hover:bg-opacity-80 transition-colors"
         onMouseDown={handleResizeStart}
+        onTouchStart={handleResizeStart}
         title="Genişliği değiştirmek için sürükleyin"
       >
         <div className="h-full flex items-center justify-center">
           <div className="w-0.5 h-8 bg-white"></div>
         </div>
+      </div>
+      
+      <div className="width-indicator">
+        {width}px
       </div>
     </div>
   )

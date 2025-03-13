@@ -12,7 +12,10 @@ const DraggablePreview: React.FC<DraggablePreviewProps> = ({ item }) => {
     item,
     collect: (monitor) => ({
       isDragging: monitor.isDragging()
-    })
+    }),
+    options: {
+      dropEffect: 'copy'
+    }
   }))
 
   const isImage = item.file.type.startsWith('image/')
@@ -21,20 +24,25 @@ const DraggablePreview: React.FC<DraggablePreviewProps> = ({ item }) => {
   return (
     <div
       ref={drag}
-      className="cursor-move w-full h-full flex items-center justify-center"
-      style={{ opacity: isDragging ? 0.5 : 1 }}
+      className="cursor-move w-full h-full flex items-center justify-center touch-manipulation"
+      style={{ 
+        opacity: isDragging ? 0.5 : 1,
+        touchAction: 'none'
+      }}
     >
       {isImage && (
         <img
           src={item.url}
           alt="preview"
           className="object-cover w-full h-full"
+          draggable="true"
         />
       )}
       {isVideo && (
         <video
           src={item.url}
           className="object-cover w-full h-full"
+          draggable="true"
         />
       )}
     </div>

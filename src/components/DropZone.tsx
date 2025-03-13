@@ -18,15 +18,25 @@ const DropZone: React.FC<DropZoneProps> = ({ accept, onDrop, className, children
     collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop()
-    })
+    }),
+    options: {
+      // Mobil cihazlarda sürükleme işlemini iyileştirmek için
+      dropEffect: 'copy'
+    }
   }))
 
   return (
     <div
       ref={drop}
-      className={`${className} ${isOver && canDrop ? 'bg-gray-700 bg-opacity-50' : ''}`}
+      className={`${className} touch-manipulation ${isOver && canDrop ? 'active' : ''}`}
+      style={{ touchAction: 'none' }}
     >
       {children}
+      {isOver && canDrop && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="drop-message">Bırak</div>
+        </div>
+      )}
     </div>
   )
 }

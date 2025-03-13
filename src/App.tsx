@@ -1,16 +1,29 @@
-
 import { useRef, useState, useEffect } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+import { TouchBackend } from 'react-dnd-touch-backend'
 import './App.css'
-
 
 import Sidebar from './components/Sidebar'
 import Preview from './components/Preview'
 import Timeline from './components/Timeline'
 
-
 import useMediaFiles from './hooks/useMediaFiles'
+
+const isMobile = () => {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768
+}
+
+
+const getBackend = () => {
+  return isMobile() ? TouchBackend : HTML5Backend
+}
+
+const touchBackendOptions = {
+  enableMouseEvents: true, 
+  enableTouchEvents: true, 
+  delayTouchStart: 50 
+}
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
@@ -94,21 +107,23 @@ function App() {
     setIsSidebarOpen(!isSidebarOpen)
   }
 
+
+  const Backend = isMobile() ? TouchBackend : HTML5Backend
+  const backendOptions = isMobile() ? touchBackendOptions : {}
+
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="min-h-screen bg-gray-900 text-white flex flex-col">
-        <div className="bg-gray-800 p-2 md:hidden">
+    <DndProvider backend={Backend} options={backendOptions}>
+      <div className="min-h-screen text-white flex flex-col">
+        <div className="bg-gray-800 p-3 md:hidden shadow-lg">
           <button 
             onClick={toggleSidebar}
-            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md"
+            className="px-4 py-2 rounded-md glow-effect"
           >
-            {isSidebarOpen ? 'Gizle' : 'Medya Paneli'}
+            {isSidebarOpen ? 'Medya Panelini Gizle' : 'Medya Panelini Göster'}
           </button>
         </div>
         
-    
         <div className="boxes-container flex flex-col md:flex-row flex-1 responsive-container">
-      
           {isSidebarOpen && (
             <Sidebar
               mediaList={mediaList}
@@ -118,15 +133,12 @@ function App() {
             />
           )}
           
-        
           <div className="content-area flex flex-col">
-           
             <Preview 
               previewItem={previewItem} 
               setPreviewItem={setPreviewItem} 
             />
             
-           
             <Timeline
               timelineItems={timelineItems}
               handleDropToTimeline={handleDropToTimeline}
